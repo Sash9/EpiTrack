@@ -5,13 +5,20 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "node server.js",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "update-stats": "node scripts/updateStats.mjs",
+    "diagnose-articles": "node scripts/diagnoseArticles.mjs"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "croner": "^9.0.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "lucide-react": "^0.548.0",
+    "pg": "^8.13.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-icons": "^5.5.0",

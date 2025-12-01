@@ -1,19 +1,57 @@
-# React + Vite
+# EpiTrack
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+EpiTrack is a health news intelligence dashboard built with React + Vite.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Prerequisites
 
-## React Compiler
+Create a `.env` file in the root directory with your Neon PostgreSQL connection string:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+DATABASE_URL=postgres://...
+```
 
-## Expanding the ESLint configuration
+### Running the Application
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The application consists of two parts:
 
+1. **API Server** (required for real-time stats):
+   ```bash
+   npm run dev:api
+   ```
+   This starts the Express API server on `http://localhost:3001` that queries the database for stats and recent searches.
 
-to run the code type npm run dev
+2. **Frontend Development Server**:
+   ```bash
+   npm run dev
+   ```
+   This starts the Vite dev server (typically on `http://localhost:5173`). The Vite config proxies `/api` requests to the API server.
+
+**Note:** Both servers need to be running for the Data Sources page to display real-time data.
+
+## Features
+
+### Real-Time Stats Updates
+
+The Data Sources page automatically fetches and displays:
+- Total articles processed
+- Distinct keywords extracted
+- Distinct diseases tracked
+- Distinct countries covered
+
+Stats are polled every 30 seconds, so new articles added to the database will automatically update the displayed counts.
+
+### Recent Searches
+
+The "Recent Searches" section displays the most recently analyzed diseases from articles in the database, showing when each was last analyzed.
+
+## Manual Stats Update (Optional)
+
+If you need to generate a static stats snapshot (for example, for build-time data), you can run:
+
+```bash
+npm run update-stats
+```
+
+This queries the database and saves results to `src/data/stats.json`. However, the live application uses the API endpoint instead.

@@ -36,10 +36,38 @@ except OSError:
 
 # List of diseases 
 groups = [
-    ["covid", "influenza", "flu", "coronavirus", "pandemic", "measles", "mumps"],
-    ["ebola", "zika", "dengue", "malaria", "tuberculosis", "polio", "cholera"],
-    ["hepatitis", "rabies", "norovirus", "rsv", "monkeypox", "avian flu", "swine flu"],
-    ["plague", "smallpox", "west nile", "yellow fever", "chikungunya"]
+    # Respiratory & Viral
+    ["covid", "influenza", "flu", "coronavirus", "pandemic", "measles", "mumps", "rsv", "respiratory syncytial virus"],
+    ["common cold", "rhinovirus", "adenovirus", "parainfluenza", "hantavirus", "sars", "mers"],
+    
+    # Vector-borne & Tropical
+    ["ebola", "zika", "dengue", "malaria", "yellow fever", "chikungunya", "west nile", "lyme disease"],
+    ["rocky mountain spotted fever", "typhus", "scrub typhus", "leishmaniasis", "trypanosomiasis", "sleeping sickness"],
+    ["filariasis", "onchocerciasis", "river blindness", "schistosomiasis", "bilharzia"],
+    
+    # Bacterial Infections
+    ["tuberculosis", "cholera", "typhoid", "diphtheria", "pertussis", "whooping cough", "tetanus"],
+    ["meningitis", "meningococcal", "pneumonia", "strep throat", "staphylococcus", "staph infection"],
+    ["salmonella", "e. coli", "campylobacter", "shigella", "botulism", "anthrax", "plague"],
+    ["leprosy", "syphilis", "gonorrhea", "chlamydia", "legionnaires", "legionella"],
+    
+    # Viral Infections
+    ["hepatitis a", "hepatitis b", "hepatitis c", "hepatitis e", "norovirus", "rotavirus", "polio", "poliomyelitis"],
+    ["monkeypox", "smallpox", "chickenpox", "varicella", "shingles", "herpes", "hpv", "human papillomavirus"],
+    ["rabies", "hiv", "aids", "cytomegalovirus", "cmv", "epstein barr", "mononucleosis"],
+    
+    # Zoonotic & Emerging
+    ["avian flu", "bird flu", "swine flu", "h1n1", "h5n1", "h3n2", "q fever", "brucellosis"],
+    ["lassa fever", "marburg", "rift valley fever", "crimean congo hemorrhagic fever", "nipah"],
+    ["hendra", "marburg virus", "lassa virus", "nipah virus"],
+    
+    # Parasitic & Other
+    ["giardia", "cryptosporidium", "toxoplasmosis", "trichinosis", "tapeworm", "roundworm", "hookworm"],
+    ["scabies", "lice", "bed bugs", "tick borne", "tick fever"],
+    
+    # Chronic & Other Conditions
+    ["cancer", "diabetes", "hypertension", "heart disease", "stroke", "asthma", "copd"],
+    ["alzheimer", "dementia", "parkinson", "multiple sclerosis", "ms", "lupus", "rheumatoid arthritis"]
 ]
 
 # Flatten all diseases into a single list for counting
@@ -249,22 +277,81 @@ def extract_country_from_article(text, article_data=None, url=None):
             domain = urlparse(url).netloc.lower()
             # Common country domain patterns
             country_domains = {
+                # English-speaking countries
                 '.co.uk': 'United Kingdom',
                 '.com.au': 'Australia',
                 '.ca': 'Canada',
                 '.co.za': 'South Africa',
                 '.co.nz': 'New Zealand',
                 '.ie': 'Ireland',
+                '.us': 'United States',
+                '.com.sg': 'Singapore',
+                
+                # Asia
                 '.in': 'India',
                 '.jp': 'Japan',
                 '.cn': 'China',
+                '.kr': 'South Korea',
+                '.tw': 'Taiwan',
+                '.hk': 'Hong Kong',
+                '.ph': 'Philippines',
+                '.th': 'Thailand',
+                '.my': 'Malaysia',
+                '.id': 'Indonesia',
+                '.vn': 'Vietnam',
+                '.pk': 'Pakistan',
+                '.bd': 'Bangladesh',
+                '.lk': 'Sri Lanka',
+                '.np': 'Nepal',
+                
+                # Europe
                 '.de': 'Germany',
                 '.fr': 'France',
                 '.it': 'Italy',
                 '.es': 'Spain',
+                '.nl': 'Netherlands',
+                '.be': 'Belgium',
+                '.ch': 'Switzerland',
+                '.at': 'Austria',
+                '.se': 'Sweden',
+                '.no': 'Norway',
+                '.dk': 'Denmark',
+                '.fi': 'Finland',
+                '.pl': 'Poland',
+                '.pt': 'Portugal',
+                '.gr': 'Greece',
+                '.cz': 'Czech Republic',
+                '.hu': 'Hungary',
+                '.ro': 'Romania',
+                '.ru': 'Russia',
+                '.ua': 'Ukraine',
+                '.tr': 'Turkey',
+                
+                # Americas
                 '.br': 'Brazil',
                 '.mx': 'Mexico',
                 '.ar': 'Argentina',
+                '.cl': 'Chile',
+                '.co': 'Colombia',
+                '.pe': 'Peru',
+                '.ve': 'Venezuela',
+                '.ec': 'Ecuador',
+                '.uy': 'Uruguay',
+                '.py': 'Paraguay',
+                '.cr': 'Costa Rica',
+                '.pa': 'Panama',
+                
+                # Middle East & Africa
+                '.ae': 'United Arab Emirates',
+                '.sa': 'Saudi Arabia',
+                '.il': 'Israel',
+                '.eg': 'Egypt',
+                '.za': 'South Africa',
+                '.ke': 'Kenya',
+                '.ng': 'Nigeria',
+                '.gh': 'Ghana',
+                '.tz': 'Tanzania',
+                '.et': 'Ethiopia',
             }
             for domain_suffix, country_name in country_domains.items():
                 if domain_suffix in domain:
@@ -276,13 +363,65 @@ def extract_country_from_article(text, article_data=None, url=None):
     if article_data:
         source_name = article_data.get('source', {}).get('name', '').lower()
         source_country_hints = {
+            # United Kingdom
             'bbc': 'United Kingdom',
-            'cnn': 'United States',
-            'reuters': 'United Kingdom',  # Reuters is international but UK-based
             'guardian': 'United Kingdom',
+            'reuters': 'United Kingdom',  # Reuters is international but UK-based
+            'telegraph': 'United Kingdom',
+            'independent': 'United Kingdom',
+            'daily mail': 'United Kingdom',
+            'sky news': 'United Kingdom',
+            'itv': 'United Kingdom',
+            'channel 4': 'United Kingdom',
+            
+            # United States
+            'cnn': 'United States',
             'abc news': 'United States',
+            'nbc': 'United States',
+            'cbs': 'United States',
+            'fox news': 'United States',
+            'new york times': 'United States',
+            'washington post': 'United States',
+            'wall street journal': 'United States',
+            'usa today': 'United States',
+            'ap news': 'United States',
+            'associated press': 'United States',
+            'npr': 'United States',
+            'pbs': 'United States',
+            
+            # Canada
             'cbc': 'Canada',
+            'ctv': 'Canada',
+            'global news': 'Canada',
+            'national post': 'Canada',
+            'globe and mail': 'Canada',
+            
+            # Australia
             'abc australia': 'Australia',
+            'abc news australia': 'Australia',
+            'sbs': 'Australia',
+            'the australian': 'Australia',
+            'sydney morning herald': 'Australia',
+            'the age': 'Australia',
+            
+            # Other countries
+            'al jazeera': 'Qatar',
+            'xinhua': 'China',
+            'china daily': 'China',
+            'south china morning post': 'Hong Kong',
+            'times of india': 'India',
+            'hindustan times': 'India',
+            'the hindu': 'India',
+            'asahi shimbun': 'Japan',
+            'yomiuri': 'Japan',
+            'le monde': 'France',
+            'le figaro': 'France',
+            'frankfurter allgemeine': 'Germany',
+            'der spiegel': 'Germany',
+            'el pais': 'Spain',
+            'corriere della sera': 'Italy',
+            'folha': 'Brazil',
+            'globo': 'Brazil',
         }
         for hint, country in source_country_hints.items():
             if hint in source_name:
@@ -298,14 +437,73 @@ def extract_country_from_article(text, article_data=None, url=None):
     
     # Common country names to look for
     common_countries = [
+        # North America
         'United States', 'USA', 'US', 'America',
-        'United Kingdom', 'UK', 'Britain',
-        'Canada', 'Australia', 'New Zealand',
-        'India', 'China', 'Japan', 'South Korea',
-        'Germany', 'France', 'Italy', 'Spain',
-        'Brazil', 'Mexico', 'Argentina',
-        'South Africa', 'Nigeria', 'Kenya',
-        'Russia', 'Ukraine', 'Poland',
+        'Canada', 'Mexico',
+        
+        # Central America & Caribbean
+        'Cuba', 'Jamaica', 'Haiti', 'Dominican Republic', 'Puerto Rico',
+        'Guatemala', 'Honduras', 'El Salvador', 'Nicaragua', 'Costa Rica', 'Panama',
+        
+        # South America
+        'Brazil', 'Argentina', 'Chile', 'Colombia', 'Peru', 'Venezuela',
+        'Ecuador', 'Bolivia', 'Paraguay', 'Uruguay',
+        
+        # Europe - Western
+        'United Kingdom', 'UK', 'Britain', 'England', 'Scotland', 'Wales', 'Ireland',
+        'France', 'Germany', 'Italy', 'Spain', 'Portugal', 'Netherlands', 'Belgium',
+        'Switzerland', 'Austria', 'Luxembourg',
+        
+        # Europe - Northern
+        'Sweden', 'Norway', 'Denmark', 'Finland', 'Iceland',
+        
+        # Europe - Eastern
+        'Poland', 'Czech Republic', 'Hungary', 'Romania', 'Bulgaria', 'Croatia',
+        'Serbia', 'Slovakia', 'Slovenia', 'Greece', 'Turkey',
+        
+        # Europe - Former USSR
+        'Russia', 'Ukraine', 'Belarus', 'Kazakhstan', 'Georgia', 'Armenia', 'Azerbaijan',
+        
+        # Middle East
+        'Saudi Arabia', 'United Arab Emirates', 'UAE', 'Israel', 'Palestine',
+        'Jordan', 'Lebanon', 'Syria', 'Iraq', 'Iran', 'Kuwait', 'Qatar', 'Bahrain',
+        'Oman', 'Yemen', 'Egypt',
+        
+        # Asia - East
+        'China', 'Japan', 'South Korea', 'North Korea', 'Taiwan', 'Hong Kong', 'Macau',
+        'Mongolia',
+        
+        # Asia - South
+        'India', 'Pakistan', 'Bangladesh', 'Sri Lanka', 'Nepal', 'Bhutan', 'Afghanistan',
+        
+        # Asia - Southeast
+        'Indonesia', 'Malaysia', 'Singapore', 'Thailand', 'Vietnam', 'Philippines',
+        'Myanmar', 'Cambodia', 'Laos', 'Brunei',
+        
+        # Asia - Central
+        'Kazakhstan', 'Uzbekistan', 'Turkmenistan', 'Kyrgyzstan', 'Tajikistan',
+        
+        # Oceania
+        'Australia', 'New Zealand', 'Papua New Guinea', 'Fiji', 'Samoa', 'Tonga',
+        
+        # Africa - North
+        'Egypt', 'Libya', 'Tunisia', 'Algeria', 'Morocco', 'Sudan',
+        
+        # Africa - West
+        'Nigeria', 'Ghana', 'Senegal', 'Ivory Coast', 'Mali', 'Burkina Faso',
+        'Niger', 'Guinea', 'Sierra Leone', 'Liberia',
+        
+        # Africa - East
+        'Kenya', 'Ethiopia', 'Tanzania', 'Uganda', 'Rwanda', 'Somalia',
+        'Djibouti', 'Eritrea', 'South Sudan',
+        
+        # Africa - Central
+        'Democratic Republic of Congo', 'DRC', 'Congo', 'Cameroon', 'Chad',
+        'Central African Republic', 'Gabon', 'Equatorial Guinea',
+        
+        # Africa - South
+        'South Africa', 'Zimbabwe', 'Botswana', 'Namibia', 'Angola', 'Mozambique',
+        'Zambia', 'Malawi', 'Madagascar', 'Mauritius',
     ]
     
     # Extract GPE (Geopolitical Entity) entities which include countries
@@ -316,17 +514,32 @@ def extract_country_from_article(text, article_data=None, url=None):
             
             # Map common abbreviations and variations
             country_map = {
+                # United States variations
                 'us': 'United States',
                 'usa': 'United States',
                 'u.s.': 'United States',
                 'u.s.a.': 'United States',
                 'united states': 'United States',
                 'america': 'United States',
+                'united states of america': 'United States',
+                
+                # United Kingdom variations
                 'uk': 'United Kingdom',
                 'u.k.': 'United Kingdom',
                 'united kingdom': 'United Kingdom',
                 'britain': 'United Kingdom',
                 'england': 'United Kingdom',
+                'great britain': 'United Kingdom',
+                'gb': 'United Kingdom',
+                
+                # Other common abbreviations
+                'uae': 'United Arab Emirates',
+                'drc': 'Democratic Republic of Congo',
+                'congo': 'Democratic Republic of Congo',
+                'south korea': 'South Korea',
+                'north korea': 'North Korea',
+                'russia': 'Russia',
+                'russian federation': 'Russia',
             }
             
             # Check if it's a known country or variation
